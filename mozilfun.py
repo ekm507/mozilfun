@@ -24,6 +24,8 @@ def addon_page(addon:str):
     download_button_link['href'] = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/(.*\.xpi)',
     r'/g/\2', download_button_link['href'])
 
+    return bs.prettify()
+
 @app.route('/s/<query>')  # type: ignore
 def query_applets(query:str):
     search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
