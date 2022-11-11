@@ -14,8 +14,19 @@ def get_home():
 @app.route('/s/<query>')  # type: ignore
 def query_applets(query:str):
     search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
+
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
     entries = bs.findAll('div', {'class': "SearchResult-contents"})
+
+    output_html = ''
+
+    for entry in entries:
+        link = entry.findAll('a', {'class':'SearchResult-link'})[0]
+        output_html += entry.prettify()
+        output_html += link.prettify()
+
+    output_final = query_html_template.replace('###', output_html)
+    return output_final
 
 
 if __name__ == "__main__":
