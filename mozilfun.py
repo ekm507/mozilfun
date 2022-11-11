@@ -41,17 +41,43 @@ def addon_page(addon:str):
 
     bs = bs4.BeautifulSoup(addon_page, features="html.parser")
 
-
-    title = bs.find("h1", {"class": "AddonTitle"}).text
+    try:
+        title = bs.find("h1", {"class": "AddonTitle"}).text
+    except AttributeError:
+        title = ''
     title = title.split(" by ")
-    summary = bs.find("p", {"class": "Addon-summary"}).text
+
+    try:
+        summary = bs.find("p", {"class": "Addon-summary"}).text
+    except AttributeError:
+        summary = ''
+
     icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
-    users = bs.findAll("dd", {"class": "MetadataCard-content"})[0].text
-    reviews = bs.find("a", {"class": "AddonMeta-reviews-content-link"}).text
-    stars = bs.find("div", {"class": "AddonMeta-rating-title"}).text
-    install_link = bs.findAll('a', {'class': "InstallButtonWrapper-download-link"})[0]
+
+    try:
+        users = bs.findAll("dd", {"class": "MetadataCard-content"})[0].text
+    except AttributeError:
+        users = ''
+
+    try:
+        reviews = bs.find("a", {"class": "AddonMeta-reviews-content-link"}).text
+    except AttributeError:
+        reviews = ''
+
+    try:
+        stars = bs.find("div", {"class": "AddonMeta-rating-title"}).text
+    except AttributeError:
+        stars = ''
+
+    try:
+        install_link = bs.findAll('a', {'class': "InstallButtonWrapper-download-link"})[0]
+    except AttributeError:
+        install_link = ''
+
     install_link = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
     r'../g/\2_\3', install_link['href'])
+
+    
     more_info = bs.find("dl", {"class": "AddonMoreInfo-dl"})
     release_notes = bs.find("section", {"class": "AddonDescription-version-notes"})
     screenshots_tags = bs.findAll("img", {"class": "ScreenShots-image"})
