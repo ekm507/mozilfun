@@ -20,6 +20,7 @@ def send_report(path):
 def addon_page(addon:str):
     addon_page = get(f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
     bs = bs4.BeautifulSoup(addon_page, features="html.parser")
+    download_button_link = bs.findAll('a', {'class': "Button Button--action AMInstallButton-button Button--puffy"})[0]
 
 @app.route('/s/<query>')  # type: ignore
 def query_applets(query:str):
