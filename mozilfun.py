@@ -41,15 +41,34 @@ def addon_page(addon:str):
 
     bs = bs4.BeautifulSoup(addon_page, features="html.parser")
 
-    card_contents = bs.find_all('div', {"class": "Card-contents"})[0]
 
-    download_button_link = card_contents.findAll('a', {'class': "InstallButtonWrapper-download-link"})[0]
-    download_button_link['href'] = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
-    r'../g/\2_\3', download_button_link['href'])
+    title = bs.find("h1", {"class": "AddonTitle"}).text
+    title = title.split(" by ")
+    summary = bs.find("p", {"class": "Addon-summary"}).text
+    icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
+    users = bs.findAll("dd", {"class": "MetadataCard-content"})[0].text
+    reviews = bs.find("a", {"class": "AddonMeta-reviews-content-link"}).text
+    stars = bs.find("div", {"class": "AddonMeta-rating-title"}).text
+    install_link = bs.findAll('a', {'class': "InstallButtonWrapper-download-link"})[0]
+    install_link = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
+    r'../g/\2_\3', install_link['href'])
+    more_info = bs.find("dl", {"class": "AddonMoreInfo-dl"})
+    release_notes = bs.find("section", {"class": "AddonDescription-version-notes"})
+    screenshots_tags = bs.findAll("img", {"class": "ScreenShots-image"})
+    #sst = str(screenshots_tags).replace()
+    icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
+    ### Need to fix getting images directly from addons website!
 
-    card_text = card_contents.prettify()
-    final_page = addon_page_template.replace('###', card_text)
-    return final_page
+    description = bs.find("div", {"class", "AddonDescription-contents"}).text
+
+    template = addon_page_template
+    final = template.replace("---title---", f"Mozilfun! - {title[0]}").replace("---ext-name---", title[0]).replace(
+        "---developer---", title[1]).replace("---summary---", summary).replace("---dl-botton---", install_link).replace(
+        "---description---", description).replace("---screenshots---", "".join(str(item) for item in screenshots_tags)).replace(
+        "---icon---", icon).replace("---stars---", stars).replace("---users---", users).replace("---reviews---", reviews).replace(
+        "---moreinfo---", str(more_info)).replace("---release-notes---", str(release_notes))
+    
+    return final
 
 
 @app.route('/s/', methods=['GET'])
