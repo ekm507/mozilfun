@@ -19,6 +19,7 @@ def send_report(path):
 @app.route('/a/<addon>')  # type: ignore
 def addon_page(addon:str):
     addon_page = get(f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
+    bs = bs4.BeautifulSoup(addon_page, features="html.parser")
 
 @app.route('/s/<query>')  # type: ignore
 def query_applets(query:str):
