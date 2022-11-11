@@ -19,8 +19,7 @@ def send_report(path):
 
 @app.route('/s/<query>')  # type: ignore
 def query_applets(query:str):
-    # search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
-    search_page = open('test.html').read()
+    search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
 
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
     entries = bs.findAll('div', {'class': "SearchResult-contents"})
