@@ -60,7 +60,7 @@ def query_applets(query:str):
          r'../a/\2', link['href'])
         # link.string.replace_with('get addon')
         output_html += entry.prettify()
-        output_html += link.prettify()
+        # output_html += link.prettify()
 
     output_final = query_html_template.replace('###', output_html)
     return output_final
