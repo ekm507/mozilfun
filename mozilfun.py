@@ -24,7 +24,10 @@ def addon_download(addon:str):
     if addon in listdir('addons'):
         return send_file(f'addons/{addon}')
     else:
-        print('no')
+        addon_link_parts = re.findall(r'([0-9]+)_(.*)', addon)[0]
+        addon_link_joines = '/'.join(addon_link_parts) 
+        download_link = f'https://addons.mozilla.org/firefox/downloads/file/{addon_link_joines}'
+        
 
 @app.route('/a/<addon>')  # type: ignore
 def addon_page(addon:str):
