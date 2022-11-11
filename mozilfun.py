@@ -52,7 +52,6 @@ def addon_page(addon:str):
     except AttributeError:
         summary = ''
 
-    icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
 
     try:
         users = bs.findAll("dd", {"class": "MetadataCard-content"})[0].text
