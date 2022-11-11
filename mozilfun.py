@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, send_file
+from flask import Flask, send_from_directory, send_file, request
 from requests import get
 import bs4
 import re
@@ -45,8 +45,10 @@ def addon_page(addon:str):
 
     return bs.prettify()
 
-@app.route('/s/<query>')  # type: ignore
-def query_applets(query:str):
+
+@app.route('/s/', methods=['POST'])
+def give_output():
+    query = request.form['query']
     search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
 
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
