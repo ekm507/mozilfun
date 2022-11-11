@@ -15,6 +15,12 @@ makedirs('addons', exist_ok=True)
 def get_home():
     return homepage_html
 
+@app.route('/p/<path:path>')
+def proxy_data(path):
+    data = get('https://addons.mozilla.org/' + path)
+    
+    return data.content
+
 @app.route('/html/<path:path>')
 def send_report(path):
     return send_from_directory('html', path)
@@ -80,9 +86,13 @@ def addon_page(addon:str):
     more_info = bs.find("dl", {"class": "AddonMoreInfo-dl"})
     release_notes = bs.find("section", {"class": "AddonDescription-version-notes"})
     screenshots_tags = bs.findAll("img", {"class": "ScreenShots-image"})
+    for image in screenshots_tags:
+        image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../../p/\1', image['src'])
     #sst = str(screenshots_tags).replace()
     try:
         icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
+        icon = re.sub(r'https://addons.mozilla.org/(.+)', r'../../p/\1', icon)
+
     except:
         icon = ''
     ### Need to fix getting images directly from addons website!
