@@ -2,11 +2,14 @@ from flask import Flask, send_from_directory
 from requests import get
 import bs4
 import re
+from os import makedirs
 
 app = Flask(__name__)
 
 homepage_html = open('html/home.html').read()
 query_html_template = open('html/query.html').read()
+
+makedirs('addons', exist_ok=True)
 
 @app.route('/')
 def get_home():
