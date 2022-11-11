@@ -60,9 +60,9 @@ def give_output():
         link = entry.findAll('a', {'class':'SearchResult-link'})[0]
         link['href'] = re.sub(r'(/en-US/firefox/addon)/([a-zA-Z0-9-_]+)/?(.*)',
          r'../a/\2', link['href'])
-        link.string.replace_with('get addon')
+        # link.string.replace_with('get addon')
         output_html += entry.prettify()
-        output_html += link.prettify()
+        # output_html += link.prettify()
 
     output_final = query_html_template.replace('###', output_html)
     return output_final
