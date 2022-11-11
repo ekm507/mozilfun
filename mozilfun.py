@@ -48,7 +48,7 @@ def addon_page(addon:str):
 
 @app.route('/s/', methods=['GET'])
 def give_output():
-    query = request.form['query']
+    query = request.args.get('query')
     search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
 
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
