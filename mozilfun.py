@@ -16,6 +16,9 @@ def get_home():
 def send_report(path):
     return send_from_directory('html', path)
 
+@app.route('/a/<addon>')  # type: ignore
+def addon_page(addon:str):
+    addon_page = get(f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
 
 @app.route('/s/<query>')  # type: ignore
 def query_applets(query:str):
