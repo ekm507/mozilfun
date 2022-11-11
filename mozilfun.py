@@ -1,6 +1,7 @@
 from flask import Flask
 from requests import get
 import bs4
+import re
 
 app = Flask(__name__)
 
@@ -13,7 +14,8 @@ def get_home():
 
 @app.route('/s/<query>')  # type: ignore
 def query_applets(query:str):
-    search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
+    # search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
+    search_page = open('test.html').read()
 
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
     entries = bs.findAll('div', {'class': "SearchResult-contents"})
@@ -22,6 +24,8 @@ def query_applets(query:str):
 
     for entry in entries:
         link = entry.findAll('a', {'class':'SearchResult-link'})[0]
+        link['href'] = re.sub(r'(https://addons.mozilla.org/en-US/firefox/addon)/([a-zA-Z0-9-_]+)/?(.*)',
+         r'/a/\2', link['href'])
         output_html += entry.prettify()
         output_html += link.prettify()
 
