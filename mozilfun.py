@@ -27,7 +27,13 @@ def addon_download(addon:str):
         addon_link_parts = re.findall(r'([0-9]+)_(.*)', addon)[0]
         addon_link_joines = '/'.join(addon_link_parts) 
         download_link = f'https://addons.mozilla.org/firefox/downloads/file/{addon_link_joines}'
-        
+
+        with get(download_link, stream=True) as r:
+            r.raise_for_status()
+            with open(f'addons/{addon}', 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192): 
+                    f.write(chunk)
+        return send_file(f'addons/{addon}')
 
 @app.route('/a/<addon>')  # type: ignore
 def addon_page(addon:str):
