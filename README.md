@@ -1,6 +1,6 @@
 a libre front-end for mozilla firefox addons site
 ---
-
+get firefox addons from your own server
 # how to run
 
 ## using docker
