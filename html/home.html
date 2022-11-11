@@ -1,38 +1,88 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="html/home.css" type="text/css" />
-    <title>
-        mozilfun
-    </title>
+
+<style>
+body {
+  font-family: Arial;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.overlay {
+  height: 100%;
+  width: 100%;
+  display: block;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0, 0, 0, 0.79);
+}
+
+.overlay-content {
+  position: relative;
+  top: 46%;
+  width: 80%;
+  text-align: center;
+  margin-top: 30px;
+  margin: auto;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+  cursor: pointer;
+  color: white;
+}
+
+.overlay .closebtn:hover {
+  color: #ccc;
+}
+
+.overlay input[type=text] {
+  padding: 15px;
+  font-size: 17px;
+  border: none;
+  float: left;
+  width: 80%;
+  background: white;
+}
+
+.overlay input[type=text]:hover {
+  background: #f1f1f1;
+}
+
+.overlay button {
+  float: left;
+  width: 20%;
+  padding: 15px;
+  background: #ddd;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+
+.overlay button:hover {
+  background: #bbb;
+}
+</style>
 </head>
-
 <body>
-    <div id="box">
-        
-        <div class="meBox">
-            <!-- 头像 -->
-            <div class="headPhoto"></div>
-            <!-- 介绍 -->
-            <div class="meBox-title" dir="auto">
-                <p>mozillafun</p>
-                <div class="fg"></div>
-            </div>
-            <div class="meBox-text">
-                <p>
-                    use the form below to search firefox addons.
-                </p>
-                <form action="s/" , method="get">
-                    <label for="fname" , class="meBox-text">search addon:</label><br>
-                    <input type="text" id="text" name="query" value=""><br>
-                    <input type="submit" id="submit" value="search" method="get" , class="meBox-Button">
-                </form>
-            </div>
-        </div>
-    </div>
 
+<div id="myOverlay" class="overlay">
+  <div class="overlay-content">
+    <form action="/s/">
+      <input type="text" placeholder="Find Add-On... " name="query">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+</div>
+     
 </body>
-
 </html>
