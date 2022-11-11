@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from requests import get
 import bs4
 import re
@@ -11,6 +11,11 @@ query_html_template = open('html/query.html').read()
 @app.route('/')
 def get_home():
     return homepage_html
+
+@app.route('/html/<path:path>')
+def send_report(path):
+    return send_from_directory('html', path)
+
 
 @app.route('/s/<query>')  # type: ignore
 def query_applets(query:str):
