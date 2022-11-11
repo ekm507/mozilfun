@@ -10,6 +10,7 @@ homepage_html = open('html/home.html').read()
 query_html_template = open('html/query.html').read()
 addon_page_template = open('html/addon.html').read()
 makedirs('addons', exist_ok=True)
+makedirs('cache', exist_ok=True)
 
 @app.route('/')
 def get_home():
@@ -17,9 +18,14 @@ def get_home():
 
 @app.route('/p/<path:path>')
 def proxy_data(path):
-    data = get('https://addons.mozilla.org/' + path)
-    
-    return data.content
+    download_link = 'https://addons.mozilla.org/' + path
+    file_name = 'cache/' + download_link.replace('/', '_')
+    with get(download_link, stream=True) as r:
+        r.raise_for_status()
+        with open(file_name, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192): 
+                f.write(chunk)
+    return send_file(f'file_name')
 
 @app.route('/html/<path:path>')
 def send_report(path):
