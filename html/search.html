@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {
-  font-family: Arial;
-}
-
 * {
   box-sizing: border-box;
 }
-
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+@font-face {
+  font-family: Danila;
+  src: url(Danila.ttf);
+}
 .overlay {
   height: 100%;
   width: 100%;
@@ -20,7 +23,7 @@ body {
   top: 0;
   left: 0;
   background-color: rgb(0,0,0);
-  background-color: rgba(0, 0, 0, 0.79);
+  background-color: rgba(0, 0, 0, 0.833);
 }
 
 .overlay-content {
@@ -30,19 +33,6 @@ body {
   text-align: center;
   margin-top: 30px;
   margin: auto;
-}
-
-.overlay .closebtn {
-  position: absolute;
-  top: 20px;
-  right: 45px;
-  font-size: 60px;
-  cursor: pointer;
-  color: white;
-}
-
-.overlay .closebtn:hover {
-  color: #ccc;
 }
 
 .overlay input[type=text] {
@@ -71,11 +61,42 @@ body {
 .overlay button:hover {
   background: #bbb;
 }
+
+.topnav {
+  overflow: hidden;
+  background-color: rgb(29, 27, 27);
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+#Logo {
+    font-family: Danila;
+    font-size: x-large;
+    color: khaki;
+}
+#text-after-logo {
+    padding-bottom: 0;
+    padding-top: 20px;
+    font-family: Danila;
+    font-size: medium;
+    color: aliceblue;
+}
+
 </style>
 </head>
 <body>
-
 <div id="myOverlay" class="overlay">
+    <div class="topnav">
+        <a id="Logo" href="">Mozilfun!</a>
+        <a id="text-after-logo">Firefox web store front-end :)</a>
+    </div>
   <div class="overlay-content">
     <form action="/s/">
       <input type="text" placeholder="Find Add-On... " name="query">
