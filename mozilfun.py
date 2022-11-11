@@ -2,7 +2,7 @@ from flask import Flask, send_from_directory
 from requests import get
 import bs4
 import re
-from os import makedirs
+from os import listdir, makedirs
 
 app = Flask(__name__)
 
@@ -18,6 +18,13 @@ def get_home():
 @app.route('/html/<path:path>')
 def send_report(path):
     return send_from_directory('html', path)
+
+@app.route('/g/<addon>')  # type: ignore
+def addon_download(addon:str):
+    if addon in listdir('addons'):
+        print('yes')
+    else:
+        print('no')
 
 @app.route('/a/<addon>')  # type: ignore
 def addon_page(addon:str):
