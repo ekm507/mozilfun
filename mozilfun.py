@@ -25,7 +25,7 @@ def proxy_data(path):
         with open(file_name, 'wb') as f:
             for chunk in r.iter_content(chunk_size=8192): 
                 f.write(chunk)
-    return send_file(f'file_name')
+    return send_file(file_name)
 
 @app.route('/html/<path:path>')
 def send_report(path):
