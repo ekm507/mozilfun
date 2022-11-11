@@ -77,15 +77,22 @@ def addon_page(addon:str):
     install_link = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
     r'../g/\2_\3', install_link['href'])
 
-    
+
     more_info = bs.find("dl", {"class": "AddonMoreInfo-dl"})
     release_notes = bs.find("section", {"class": "AddonDescription-version-notes"})
     screenshots_tags = bs.findAll("img", {"class": "ScreenShots-image"})
     #sst = str(screenshots_tags).replace()
-    icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
+    try:
+        icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
+    except:
+        icon = ''
     ### Need to fix getting images directly from addons website!
 
-    description = bs.find("div", {"class", "AddonDescription-contents"}).text
+    try:
+        description = bs.find("div", {"class", "AddonDescription-contents"}).text
+    except AttributeError:
+        description = ''
+
 
     template = addon_page_template
     final = template.replace("---title---", f"Mozilfun! - {title[0]}").replace("---ext-name---", title[0]).replace(
