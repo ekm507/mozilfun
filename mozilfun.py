@@ -93,11 +93,11 @@ def addon_page(addon:str):
     release_notes = bs.find("section", {"class": "AddonDescription-version-notes"})
     screenshots_tags = bs.findAll("img", {"class": "ScreenShots-image"})
     for image in screenshots_tags:
-        image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../../p/\1', image['src'])
+        image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
     #sst = str(screenshots_tags).replace()
     try:
         icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
-        icon = re.sub(r'https://addons.mozilla.org/(.+)', r'../../p/\1', icon)
+        icon = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', icon)
 
     except:
         icon = ''
