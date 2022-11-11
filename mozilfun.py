@@ -56,8 +56,8 @@ def query_applets(query:str):
 
     for entry in entries:
         link = entry.findAll('a', {'class':'SearchResult-link'})[0]
-        link['href'] = re.sub(r'(en-US/firefox/addon)/([a-zA-Z0-9-_]+)/?(.*)',
-         r'/a/\2', link['href'])
+        link['href'] = re.sub(r'(/en-US/firefox/addon)/([a-zA-Z0-9-_]+)/?(.*)',
+         r'../a/\2', link['href'])
         link.string.replace_with('get addon')
         output_html += entry.prettify()
         output_html += link.prettify()
