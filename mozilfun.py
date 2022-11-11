@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 homepage_html = open('html/home.html').read()
 query_html_template = open('html/query.html').read()
-
+addon_page_template = open('html/addon.html').read()
 makedirs('addons', exist_ok=True)
 
 @app.route('/')
@@ -38,12 +38,18 @@ def addon_download(addon:str):
 @app.route('/a/<addon>')  # type: ignore
 def addon_page(addon:str):
     addon_page = get(f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
+
     bs = bs4.BeautifulSoup(addon_page, features="html.parser")
-    download_button_link = bs.findAll('a', {'class': "InstallButtonWrapper-download-link"})[0]
+
+    card_contents = bs.find_all('div', {"class": "Card-contents"})[0]
+
+    download_button_link = card_contents.findAll('a', {'class': "InstallButtonWrapper-download-link"})[0]
     download_button_link['href'] = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
     r'../g/\2_\3', download_button_link['href'])
 
-    return bs.prettify()
+    card_text = card_contents.prettify()
+    final_page = addon_page_template.replace('###', card_text)
+    return final_page
 
 
 @app.route('/s/', methods=['GET'])
