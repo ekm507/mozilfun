@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, send_file
 from requests import get
 import bs4
 import re
@@ -22,7 +22,7 @@ def send_report(path):
 @app.route('/g/<addon>')  # type: ignore
 def addon_download(addon:str):
     if addon in listdir('addons'):
-        print('yes')
+        return send_file(f'addons/{addon}')
     else:
         print('no')
 
