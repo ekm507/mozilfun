@@ -21,8 +21,8 @@ def addon_page(addon:str):
     addon_page = get(f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
     bs = bs4.BeautifulSoup(addon_page, features="html.parser")
     download_button_link = bs.findAll('a', {'class': "Button Button--action AMInstallButton-button Button--puffy"})[0]
-    download_button_link['href'] = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/(.*\.xpi)',
-    r'/g/\2', download_button_link['href'])
+    download_button_link['href'] = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
+    r'/g/\2_\3', download_button_link['href'])
 
     return bs.prettify()
 
