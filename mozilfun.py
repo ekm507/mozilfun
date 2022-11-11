@@ -3,6 +3,7 @@ from flask import Flask
 app = Flask(__name__)
 
 homepage_html = open('html/home.html').read()
+query_html_template = open('html/query.html').read()
 
 @app.route('/')
 def get_home():
