@@ -16,56 +16,67 @@ makedirs('addons', exist_ok=True)
 makedirs('cache', exist_ok=True)
 
 # route for homepage
+
+
 @app.route('/')
 def get_home():
     return homepage_html
 
 # route for downloading images and other files in mozilla addons site.
 # p stands for proxy
+
+
 @app.route('/p/<path:path>')
 def proxy_data(path):
     # download file from mozilla into cache folder
     download_link = 'https://addons.mozilla.org/' + path
     file_name = 'cache/' + download_link.replace('/', '_')
     with get(download_link, stream=True) as r:
-        r.raise_for_status()
+        r.raise_for_st  atus()
         with open(file_name, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=8192): 
+            for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
     # send file from cache folder to user
     return send_file(file_name)
 
 # route for static files. like html and css files.
+
+
 @app.route('/html/<path:path>')
 def send_report(path):
     return send_from_directory('html', path)
 
 # route for downloading add-on.
 # g stands for get
+
+
 @app.route('/g/<addon>')  # type: ignore
-def addon_download(addon:str):
+def addon_download(addon: str):
     # send cached file from addon folder if it exists
     if addon in listdir('addons'):
         return send_file(f'addons/{addon}')
     else:
         # download file from mozilla, if it is not cached
         addon_link_parts = re.findall(r'([0-9]+)_(.*)', addon)[0]
-        addon_link_joines = '/'.join(addon_link_parts) 
+        addon_link_joines = '/'.join(addon_link_parts)
         download_link = f'https://addons.mozilla.org/firefox/downloads/file/{addon_link_joines}'
 
         with get(download_link, stream=True) as r:
             r.raise_for_status()
             with open(f'addons/{addon}', 'wb') as f:
-                for chunk in r.iter_content(chunk_size=8192): 
+                for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
         # send cached addon to user
         return send_file(f'addons/{addon}')
 
 # route for add-on page
 # a stands for add-on
+
+
 @app.route('/a/<addon>')  # type: ignore
-def addon_page(addon:str):
-    addon_page = get(f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
+def addon_page(addon: str):
+    addon_page = get(
+        f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
 
     bs = bs4.BeautifulSoup(addon_page, features="html.parser")
 
@@ -89,7 +100,8 @@ def addon_page(addon:str):
         users = ''
 
     try:
-        reviews = bs.find("a", {"class": "AddonMeta-reviews-content-link"}).text
+        reviews = bs.find(
+            "a", {"class": "AddonMeta-reviews-content-link"}).text
     except AttributeError:
         reviews = ''
 
@@ -99,15 +111,17 @@ def addon_page(addon:str):
         stars = ''
 
     try:
-        install_link = bs.findAll('a', {'class': "InstallButtonWrapper-download-link"})[0]
+        install_link = bs.findAll(
+            'a', {'class': "InstallButtonWrapper-download-link"})[0]
     except AttributeError:
         install_link = ''
 
     try:
-        description = bs.find("div", {"class", "AddonDescription-contents"}).text
+        description = bs.find(
+            "div", {"class", "AddonDescription-contents"}).text
     except AttributeError:
         description = ''
-    
+
     try:
         icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
         # substitute link for icon image, with /p/ route link.
@@ -116,7 +130,6 @@ def addon_page(addon:str):
     except:
         icon = ''
 
-
     # substitute installation link with /g/ route, so thet
     # the add-on is sent from server to the user, instead of giving direct link to mozilla
     # for example, this link:
@@ -124,19 +137,19 @@ def addon_page(addon:str):
     # will be substituted into this link:
     # ../g/123_funny-addon.xpi
     install_link = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
-    r'../g/\2_\3', install_link['href'])
-
+                          r'../g/\2_\3', install_link['href'])
 
     more_info = bs.find("dl", {"class": "AddonMoreInfo-dl"})
-    release_notes = bs.find("section", {"class": "AddonDescription-version-notes"})
-    
-    
+    release_notes = bs.find(
+        "section", {"class": "AddonDescription-version-notes"})
+
     # get all screenshot images from page
     screenshots_tags = bs.findAll("img", {"class": "ScreenShots-image"})
     # substitute their link with /p/ link to let the server proxy them instead of,
     # directly linking them to mozilla
     for image in screenshots_tags:
-        image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
+        image['src'] = re.sub(
+            r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
 
     # start putting extracted and modified elements
     # in page template and send it to user
@@ -146,7 +159,7 @@ def addon_page(addon:str):
         "---description---", description).replace("---screenshots---", "".join(str(item) for item in screenshots_tags)).replace(
         "---icon---", icon).replace("---stars---", stars).replace("---users---", users).replace("---reviews---", reviews).replace(
         "---moreinfo---", str(more_info)).replace("---release-notes---", str(release_notes))
-    
+
     return final
 
 
@@ -160,7 +173,8 @@ def give_output():
     query = request.args.get('query')
 
     # get page from mozilla
-    search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
+    search_page = get(
+        f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
 
     # start exctracting elements from page.
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
@@ -171,9 +185,9 @@ def give_output():
     # substitute links with /a/ route
     # so that they are shown to user from mozilfun.
     for entry in entries:
-        link = entry.findAll('a', {'class':'SearchResult-link'})[0]
+        link = entry.findAll('a', {'class': 'SearchResult-link'})[0]
         link['href'] = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
-         r'../a/\2', link['href'])
+                              r'../a/\2', link['href'])
         output_html += entry.prettify()
 
     output_final = query_html_template.replace('###', output_html)
