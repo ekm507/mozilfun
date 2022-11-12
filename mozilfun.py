@@ -114,6 +114,12 @@ def addon_page(addon:str):
         icon = ''
 
 
+    # substitute installation link with /g/ route, so thet
+    # the add-on is sent from server to the user, instead of giving direct link to mozilla
+    # for example, this link:
+    # https://addons.mozilla.org/firefox/downloads/file/123/funny-addon.xpi
+    # will be substituted into this link:
+    # ../g/123_funny-addon.xpi
     install_link = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
     r'../g/\2_\3', install_link['href'])
 
