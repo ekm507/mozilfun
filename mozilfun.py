@@ -7,6 +7,7 @@ from os.path import exists
 
 app = Flask(__name__)
 
+# read html templates. they are read once when program is started
 homepage_html = open('html/home.html').read()
 query_html_template = open('html/query.html').read()
 addon_page_template = open('html/addon.html').read()
