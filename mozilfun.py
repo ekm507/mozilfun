@@ -23,6 +23,8 @@ makedirs('cache/images', exist_ok=True)
 def get_home():
     return homepage_html
 
+# route for sending images.
+# p stands for proxy
 @app.route('/p/<path:path>')
 def proxy_data(path):
     download_link = 'https://addons.mozilla.org/' + path
