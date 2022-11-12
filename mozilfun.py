@@ -66,6 +66,9 @@ def addon_page(addon:str):
 
     bs = bs4.BeautifulSoup(addon_page, features="html.parser")
 
+    # try getting different page elements from add-on page.
+    # try...except structure is used to prevent it from crashing, when
+    # some elements do not exist in the page.
     try:
         title = bs.find("h1", {"class": "AddonTitle"}).text
     except AttributeError:
@@ -76,7 +79,6 @@ def addon_page(addon:str):
         summary = bs.find("p", {"class": "Addon-summary"}).text
     except AttributeError:
         summary = ''
-
 
     try:
         users = bs.findAll("dd", {"class": "MetadataCard-content"})[0].text
@@ -98,6 +100,20 @@ def addon_page(addon:str):
     except AttributeError:
         install_link = ''
 
+    try:
+        description = bs.find("div", {"class", "AddonDescription-contents"}).text
+    except AttributeError:
+        description = ''
+    
+    try:
+        icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
+        # substitute link for icon image, with /p/ route link.
+        # this is done to be able to proxy image for user, instead of directly linking to mozilla.
+        icon = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', icon)
+    except:
+        icon = ''
+
+
     install_link = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
     r'../g/\2_\3', install_link['href'])
 
@@ -108,18 +124,6 @@ def addon_page(addon:str):
     for image in screenshots_tags:
         image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
     #sst = str(screenshots_tags).replace()
-    try:
-        icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
-        icon = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', icon)
-
-    except:
-        icon = ''
-    ### Need to fix getting images directly from addons website!
-
-    try:
-        description = bs.find("div", {"class", "AddonDescription-contents"}).text
-    except AttributeError:
-        description = ''
 
 
     template = addon_page_template
