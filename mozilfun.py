@@ -74,6 +74,8 @@ def addon_download(addon:str):
         # after add-on is downloaded, send it to user
         return send_file(file_name)
 
+# route for add-on page.
+# a stands for add-on
 @app.route('/a/<addon>')  # type: ignore
 def addon_page(addon:str):
     addon_page = get(f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
