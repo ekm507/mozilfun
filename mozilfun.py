@@ -126,11 +126,14 @@ def addon_page(addon:str):
 
     more_info = bs.find("dl", {"class": "AddonMoreInfo-dl"})
     release_notes = bs.find("section", {"class": "AddonDescription-version-notes"})
+    
+    
+    # get all screenshot images from page
     screenshots_tags = bs.findAll("img", {"class": "ScreenShots-image"})
+    # substitute their link with /p/ link to let the server proxy them instead of,
+    # directly linking them to mozilla
     for image in screenshots_tags:
         image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
-    #sst = str(screenshots_tags).replace()
-
 
     template = addon_page_template
     final = template.replace("---title---", f"Mozilfun! - {title[0]}").replace("---ext-name---", title[0]).replace(
