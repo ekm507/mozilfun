@@ -44,6 +44,8 @@ def proxy_data(path):
         # send cached image after it is downloaded
         return send_file(file_name)
 
+# path to serve static files. such as css files,
+# and images that are in static htmls
 @app.route('/html/<path:path>')
 def send_report(path):
     return send_from_directory('html', path)
