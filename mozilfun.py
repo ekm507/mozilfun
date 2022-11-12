@@ -2,7 +2,7 @@ from flask import Flask, send_from_directory, send_file, request
 from requests import get
 import bs4
 import re
-from os import listdir, makedirs
+from os import makedirs
 from os.path import exists
 
 app = Flask(__name__)
