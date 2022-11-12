@@ -154,6 +154,8 @@ def addon_page(addon:str):
     return final
 
 
+# route for quert page
+# s stands for search
 @app.route('/s/', methods=['GET'])
 def give_output():
     query = request.args.get('query')
