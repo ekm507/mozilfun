@@ -125,15 +125,32 @@ def give_output():
     search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
 
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
+
+
+
     entries = bs.findAll('div', {'class': "SearchResult-contents"})
 
     output_html = ''
 
     for entry in entries:
-        link = entry.findAll('a', {'class':'SearchResult-link'})[0]
-        link['href'] = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
-         r'../a/\2', link['href'])
-        # link.string.replace_with('get addon')
+
+        try:
+            link = entry.findAll('a', {'class':'SearchResult-link'})[0]
+            link['href'] = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
+            r'../a/\2', link['href'])
+        except:
+            link = ''
+
+
+
+        try:
+            icon = entry.find("img", {"class": "Addon-icon-image"})["src"]
+            # substitute link for icon image, with /p/ route link.
+            # this is done to be able to proxy image for user, instead of directly linking to mozilla.
+            icon = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', icon)
+        except:
+            icon = ''
+        
         output_html += entry.prettify()
         # output_html += link.prettify()
 
