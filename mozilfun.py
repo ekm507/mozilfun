@@ -29,12 +29,16 @@ def get_home():
 def proxy_data(path):
     download_link = 'https://addons.mozilla.org/' + path
     file_name = 'cache/images/' + download_link.replace('/', '_')
-    with get(download_link, stream=True) as r:
-        r.raise_for_status()
-        with open(file_name, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=8192): 
-                f.write(chunk)
-    return send_file(file_name)
+
+    if exists(file_name):
+        return send_file(file_name)
+    else:
+        with get(download_link, stream=True) as r:
+            r.raise_for_status()
+            with open(file_name, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192): 
+                    f.write(chunk)
+        return send_file(file_name)
 
 @app.route('/html/<path:path>')
 def send_report(path):
