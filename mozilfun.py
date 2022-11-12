@@ -17,6 +17,8 @@ makedirs('cache', exist_ok=True)
 makedirs('cache/addons', exist_ok=True)
 makedirs('cache/images', exist_ok=True)
 
+# default route for homepage.
+# there is a search bar in that page
 @app.route('/')
 def get_home():
     return homepage_html
