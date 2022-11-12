@@ -159,11 +159,14 @@ def give_output():
     # get page from mozilla
     search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
 
+    # start exctracting elements from page.
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
     entries = bs.findAll('div', {'class': "SearchResult-contents"})
 
     output_html = ''
 
+    # substitute links with /a/ route
+    # so that they are shown to user from mozilfun.
     for entry in entries:
         link = entry.findAll('a', {'class':'SearchResult-link'})[0]
         link['href'] = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
