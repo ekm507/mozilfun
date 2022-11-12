@@ -6,9 +6,12 @@ from os import listdir, makedirs
 
 app = Flask(__name__)
 
+# open template pages. this is done once when program starts
 homepage_html = open('html/home.html').read()
 query_html_template = open('html/query.html').read()
 addon_page_template = open('html/addon.html').read()
+
+# make directory for caches if not exist.
 makedirs('addons', exist_ok=True)
 makedirs('cache', exist_ok=True)
 
