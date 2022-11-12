@@ -12,10 +12,13 @@ addon_page_template = open('html/addon.html').read()
 makedirs('addons', exist_ok=True)
 makedirs('cache', exist_ok=True)
 
+# route for homepage
 @app.route('/')
 def get_home():
     return homepage_html
 
+# route for downloading images and other files in mozilla addons site.
+# p stands for proxy
 @app.route('/p/<path:path>')
 def proxy_data(path):
     download_link = 'https://addons.mozilla.org/' + path
@@ -27,10 +30,13 @@ def proxy_data(path):
                 f.write(chunk)
     return send_file(file_name)
 
+# route for static files. like html and css files.
 @app.route('/html/<path:path>')
 def send_report(path):
     return send_from_directory('html', path)
 
+# route for downloading add-on.
+# g stands for get
 @app.route('/g/<addon>')  # type: ignore
 def addon_download(addon:str):
     if addon in listdir('addons'):
@@ -47,6 +53,8 @@ def addon_download(addon:str):
                     f.write(chunk)
         return send_file(f'addons/{addon}')
 
+# route for add-on page
+# a stands for add-on
 @app.route('/a/<addon>')  # type: ignore
 def addon_page(addon:str):
     addon_page = get(f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
@@ -119,6 +127,8 @@ def addon_page(addon:str):
     return final
 
 
+# route for query page
+# s stands for search
 @app.route('/s/', methods=['GET'])
 def give_output():
     query = request.args.get('query')
