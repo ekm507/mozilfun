@@ -50,6 +50,8 @@ def proxy_data(path):
 def send_report(path):
     return send_from_directory('html', path)
 
+# route for downloading add-on files
+# g stands for get
 @app.route('/g/<addon>')  # type: ignore
 def addon_download(addon:str):
     file_name = f'cache/addons/{addon}'
