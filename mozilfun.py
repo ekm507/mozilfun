@@ -10,6 +10,8 @@ app = Flask(__name__)
 homepage_html = open('html/home.html').read()
 query_html_template = open('html/query.html').read()
 addon_page_template = open('html/addon.html').read()
+
+# make folders for cache if they do not exist
 makedirs('cache', exist_ok=True)
 makedirs('cache/addons', exist_ok=True)
 makedirs('cache/images', exist_ok=True)
