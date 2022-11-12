@@ -135,6 +135,8 @@ def addon_page(addon:str):
     for image in screenshots_tags:
         image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
 
+    # start putting extracted and modified elements
+    # in page template and send it to user
     template = addon_page_template
     final = template.replace("---title---", f"Mozilfun! - {title[0]}").replace("---ext-name---", title[0]).replace(
         "---developer---", title[1]).replace("---summary---", summary).replace("---dl-botton---", install_link).replace(
