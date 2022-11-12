@@ -41,9 +41,11 @@ def send_report(path):
 # g stands for get
 @app.route('/g/<addon>')  # type: ignore
 def addon_download(addon:str):
+    # send cached file from addon folder if it exists
     if addon in listdir('addons'):
         return send_file(f'addons/{addon}')
     else:
+        # download file from mozilla, if it is not cached
         addon_link_parts = re.findall(r'([0-9]+)_(.*)', addon)[0]
         addon_link_joines = '/'.join(addon_link_parts) 
         download_link = f'https://addons.mozilla.org/firefox/downloads/file/{addon_link_joines}'
@@ -53,6 +55,7 @@ def addon_download(addon:str):
             with open(f'addons/{addon}', 'wb') as f:
                 for chunk in r.iter_content(chunk_size=8192): 
                     f.write(chunk)
+        # send cached addon to user
         return send_file(f'addons/{addon}')
 
 # route for add-on page
