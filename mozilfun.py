@@ -21,6 +21,7 @@ def get_home():
 # p stands for proxy
 @app.route('/p/<path:path>')
 def proxy_data(path):
+    # download file from mozilla into cache folder
     download_link = 'https://addons.mozilla.org/' + path
     file_name = 'cache/' + download_link.replace('/', '_')
     with get(download_link, stream=True) as r:
@@ -28,6 +29,7 @@ def proxy_data(path):
         with open(file_name, 'wb') as f:
             for chunk in r.iter_content(chunk_size=8192): 
                 f.write(chunk)
+    # send file from cache folder to user
     return send_file(file_name)
 
 # route for static files. like html and css files.
