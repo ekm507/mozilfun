@@ -178,5 +178,7 @@ def give_output():
     return output_final
 
 
+# run flask app
+# this can be changed in development #NOTE
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
