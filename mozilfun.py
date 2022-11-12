@@ -3,14 +3,16 @@ from requests import get
 import bs4
 import re
 from os import listdir, makedirs
+from os.path import exists
 
 app = Flask(__name__)
 
 homepage_html = open('html/home.html').read()
 query_html_template = open('html/query.html').read()
 addon_page_template = open('html/addon.html').read()
-makedirs('addons', exist_ok=True)
 makedirs('cache', exist_ok=True)
+makedirs('cache/addons', exist_ok=True)
+makedirs('cache/images', exist_ok=True)
 
 @app.route('/')
 def get_home():
@@ -19,7 +21,7 @@ def get_home():
 @app.route('/p/<path:path>')
 def proxy_data(path):
     download_link = 'https://addons.mozilla.org/' + path
-    file_name = 'cache/' + download_link.replace('/', '_')
+    file_name = 'cache/images/' + download_link.replace('/', '_')
     with get(download_link, stream=True) as r:
         r.raise_for_status()
         with open(file_name, 'wb') as f:
@@ -33,8 +35,9 @@ def send_report(path):
 
 @app.route('/g/<addon>')  # type: ignore
 def addon_download(addon:str):
-    if addon in listdir('addons'):
-        return send_file(f'addons/{addon}')
+    file_name = f'cache/addons/{addon}'
+    if exists(file_name):
+        return send_file(file_name)
     else:
         addon_link_parts = re.findall(r'([0-9]+)_(.*)', addon)[0]
         addon_link_joines = '/'.join(addon_link_parts) 
@@ -42,10 +45,10 @@ def addon_download(addon:str):
 
         with get(download_link, stream=True) as r:
             r.raise_for_status()
-            with open(f'addons/{addon}', 'wb') as f:
+            with open(file_name, 'wb') as f:
                 for chunk in r.iter_content(chunk_size=8192): 
                     f.write(chunk)
-        return send_file(f'addons/{addon}')
+        return send_file(file_name)
 
 @app.route('/a/<addon>')  # type: ignore
 def addon_page(addon:str):
