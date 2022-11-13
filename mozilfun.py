@@ -79,7 +79,7 @@ def addon_download(addon:str):
 @app.route('/a/<addon>')  # type: ignore
 def addon_page(addon:str):
     addon_page = get(f'https://addons.mozilla.org/en-US/firefox/addon/{addon}').text
-    #addon_page = open("test1.html").read()
+    #addon_page = opFen("test1.html").read()
     bs = bs4.BeautifulSoup(addon_page, features="html.parser")
 
     try:
@@ -89,25 +89,22 @@ def addon_page(addon:str):
     title = title.split(" by ")
 
     try:
-        summary = bs.find("p", {"class": "Addon-summary"}).text
+        summary = str(bs.find("p", {"class": "Addon-summary"}))
     except AttributeError:
         summary = ''
 
 
-    try:
-        users = bs.findAll("dd", {"class": "MetadataCard-content"})[0].text
-    except AttributeError:
-        users = ''
+    users = bs.findAll("dd", {"class": "MetadataCard-content"})[0].text
+    print(users)
+    
+    if users == "": users = 'No'
 
     try:
         reviews = bs.find("a", {"class": "AddonMeta-reviews-content-link"}).text
     except AttributeError:
-        reviews = ''
+        reviews = 'No'
 
-    try:
-        stars = bs.find("div", {"class": "AddonMeta-rating-title"}).text
-    except AttributeError:
-        stars = ''
+    stars = bs.find("div", {"class": "AddonMeta-rating-title"}).text
 
     try:
         install_link = bs.findAll('a', {'class': "InstallButtonWrapper-download-link"})[0]
@@ -125,7 +122,9 @@ def addon_page(addon:str):
     for image in screenshots_tags:
         image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
         screenshots_slider.append(f'<div class="mySlides fade"><img src="{image["src"]}" style="width:100%;"></div>')
-    ### Bug: Images are not shown completely.
+    
+    if len(screenshots_slider) > 1:
+        screenshots_slider.append('<a class="prev" onclick="plusSlides(-1)">❮</a><a class="next" onclick="plusSlides(1)">❯</a>')
     try:
         icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
         icon = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', icon)
@@ -141,7 +140,7 @@ def addon_page(addon:str):
     if bs.find("a", {"class":"PromotedBadge-link--recommended"}) != None:
         recommended = True
     else: recommended = False
-    recommendedHTML = '''<section class="Card-contents" style="text-align: center; font-family: Danila; font-size: x-large; color: yellow"> 
+    recommendedHTML = '''<section class="Card-contents" style="text-align: center; font-family: Danila; font-size: x-large; color: khaki"> 
         Recommended by firefox :)</section>'''
 
 
