@@ -88,12 +88,14 @@ def addon_page(addon:str):
     install_link = re.sub(r'(https://addons.mozilla.org/firefox/downloads/file)/([0-9]+)/(.*\.xpi)',
     r'../g/\2_\3', install_link['href'])
 
-
+    
     more_info = bs.find("dl", {"class": "AddonMoreInfo-dl"})
     release_notes = bs.find("section", {"class": "AddonDescription-version-notes"})
     screenshots_tags = bs.findAll("img", {"class": "ScreenShots-image"})
+    screenshots_slider = []
     for image in screenshots_tags:
         image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
+        screenshots_slider.append(f'<div class="mySlides fade"><img src="{image["src"]}" style="width:100%;"></div>')
     ### Bug: Images are not shown completely.
     try:
         icon = bs.find("img", {"class": "Addon-icon-image"})["src"]
@@ -117,12 +119,13 @@ def addon_page(addon:str):
     template = addon_page_template
     final = template.replace("---title---", f"Mozilfun! - {title[0]}").replace("---ext-name---", title[0]).replace(
         "---developer---", title[1]).replace("---summary---", summary).replace("---dl-botton---", install_link).replace(
-        "---description---", description).replace("---screenshots---", "".join(str(item) for item in screenshots_tags)).replace("---icon---", icon).replace(
+        "---description---", description).replace("---screenshots---", "".join(screenshots_slider)).replace("---icon---", icon).replace(
         "---stars---", stars).replace("---users---", users).replace("---reviews---", reviews).replace("---moreinfo---", str(more_info)).replace(
         "---release-notes---", str(release_notes) if release_notes != None else "").replace("---recommended---", 
-         recommendedHTML if recommended else "")
+        recommendedHTML if recommended else "").replace('<section class="Card ShowMoreCard AddonDescription-version-notes ShowMoreCard--expanded Card--no-footer">',
+        '<section class="Card ShowMoreCard AddonDescription-version-notes ShowMoreCard--expanded Card--no-footer" style="margin-bottom: 10px;">')
     
-    return final
+    return final.replace("None", "")
 
 
 @app.route('/s/', methods=['GET'])
