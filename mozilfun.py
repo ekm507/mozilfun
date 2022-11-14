@@ -172,7 +172,7 @@ def give_output():
         links = entry.findAll('a')
         for link in links:
             link['href'] = re.sub(r'(/en-US/firefox/addon/)([^/]+)/(.*)',
-             r'../a/(\2)',
+             r'../a/\2',
               link['href'])
 
     output_html = ''
