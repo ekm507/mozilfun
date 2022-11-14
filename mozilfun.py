@@ -1,3 +1,4 @@
+from dataclasses import replace
 from flask import Flask, send_from_directory, send_file, request
 from requests import get
 import bs4
@@ -164,36 +165,16 @@ def give_output():
     search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
 
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
-
-
-
-    entries = bs.findAll('div', {'class': "SearchResult-contents"})
+    search_result_num = bs.find("h1", {"class": "SearchContextCard-header"}).text
+    entries = str(bs.find('ul', {'class': "AddonsCard-list"}))
 
     output_html = ''
 
-    for entry in entries:
-
-        try:
-            link = entry.findAll('a', {'class':'SearchResult-link'})[0]
-            link['href'] = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
-            r'../a/\2', link['href'])
-        except:
-            link = ''
-
-
-
-        try:
-            icon = entry.find("img", {"class": "Addon-icon-image"})["src"]
-            # substitute link for icon image, with /p/ route link.
-            # this is done to be able to proxy image for user, instead of directly linking to mozilla.
-            icon = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', icon)
-        except:
-            icon = ''
-        
-        output_html += entry.prettify()
-        # output_html += link.prettify()
-
-    output_final = query_html_template.replace('###', output_html)
+    #entries = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
+    #     r'../a/\2', entries)
+    entries = entries.replace('https://addons.mozilla.org/', "../p/")
+    output_final = query_html_template.replace('---search-name---', search_result_num).replace(
+        '---results---', entries)
     return output_final
 
 
