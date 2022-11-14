@@ -235,5 +235,5 @@
     /*! CSS Used from: Embedded */
     .sf-hidden{display:none!important;}
     /*! CSS Used fontfaces */
-    @font-face{font-family:Danila;src:url(/html/Danila.ttf);}
-    @font-face{font-family:Vazirmatn;src:url(/html/Vazirmatn-Regular.ttf);}
+    @font-face{font-family:Danila;src:url(../html/Danila.ttf);}
+    @font-face{font-family:Vazirmatn;src:url(../html/Vazirmatn-Regular.ttf);}
