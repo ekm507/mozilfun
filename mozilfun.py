@@ -166,15 +166,22 @@ def give_output():
 
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
     search_result_num = bs.find("h1", {"class": "SearchContextCard-header"}).text
-    entries = str(bs.find('ul', {'class': "AddonsCard-list"}))
+    entries = bs.find('ul', {'class': "AddonsCard-list"})
+
+    for entry in entries:
+        links = entry.find('a')
+        for link in links:
+            link['href'] = re.sub(r'(/en-US/firefox/addon/)([^/]+)/(.*)',
+             r'../a/(\2)',
+              link['href'])
 
     output_html = ''
 
     #entries = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
     #     r'../a/\2', entries)
-    entries = entries.replace('https://addons.mozilla.org/', "../p/")
+    entries_text = str(entries)
     output_final = query_html_template.replace('---search-name---', search_result_num).replace(
-        '---results---', entries)
+        '---results---', entries_text)
     return output_final
 
 
