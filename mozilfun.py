@@ -169,11 +169,17 @@ def give_output():
     entries = bs.findAll('ul', {'class': "AddonsCard-list"})
 
     for entry in entries:
+
         links = entry.findAll('a')
         for link in links:
             link['href'] = re.sub(r'(/en-US/firefox/addon/)([^/]+)/(.*)',
              r'../a/\2',
               link['href'])
+        
+        images = entry.findAll('img')
+        for image in images:
+            image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
+  
 
     output_html = ''
 
