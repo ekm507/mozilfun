@@ -185,7 +185,7 @@ def give_output():
 
     #entries = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
     #     r'../a/\2', entries)
-    entries_text = str(entries)
+    entries_text = ''.join([str(entry) for entry in entries])
     output_final = query_html_template.replace('---search-name---', search_result_num).replace(
         '---results---', entries_text)
     return output_final
