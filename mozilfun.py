@@ -1,3 +1,4 @@
+from dataclasses import replace
 from flask import Flask, send_from_directory, send_file, request
 from requests import get
 import bs4
@@ -164,19 +165,29 @@ def give_output():
     search_page = get(f'https://addons.mozilla.org/en-US/firefox/search/?q={query}').text
 
     bs = bs4.BeautifulSoup(search_page, features="html.parser")
-    entries = bs.findAll('div', {'class': "SearchResult-contents"})
+    search_result_num = bs.find("h1", {"class": "SearchContextCard-header"}).text
+    entries = bs.findAll('ul', {'class': "AddonsCard-list"})
+
+    for entry in entries:
+
+        links = entry.findAll('a')
+        for link in links:
+            link['href'] = re.sub(r'(/en-US/firefox/addon/)([^/]+)/(.*)',
+             r'../a/\2',
+              link['href'])
+        
+        images = entry.findAll('img')
+        for image in images:
+            image['src'] = re.sub(r'https://addons.mozilla.org/(.+)', r'../p/\1', image['src'])
+  
 
     output_html = ''
 
-    for entry in entries:
-        link = entry.findAll('a', {'class':'SearchResult-link'})[0]
-        link['href'] = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
-         r'../a/\2', link['href'])
-        # link.string.replace_with('get addon')
-        output_html += entry.prettify()
-        # output_html += link.prettify()
-
-    output_final = query_html_template.replace('###', output_html)
+    #entries = re.sub(r'(/en-US/firefox/addon)/([^/]+)/?(.*)',
+    #     r'../a/\2', entries)
+    entries_text = ''.join([str(entry) for entry in entries])
+    output_final = query_html_template.replace('---search-name---', search_result_num).replace(
+        '---results---', entries_text)
     return output_final
 
 
